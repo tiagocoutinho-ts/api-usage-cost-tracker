@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = ""
+}
+
+model Project {
+  id        String   @id @default(uuid())
+  name      String
+  budget    Float    // Limite de custo em dólares
+  logs      ApiLog[]
+  createdAt DateTime @default(now())
+}
+
+model ApiLog {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tokens    Int      // tokens consumidos na requisição
+  cost      Float    // Custo calculado da request
+  endpoint  String   // Ex: /v1/chat/completions
+  createdAt DateTime @default(now())
+}
